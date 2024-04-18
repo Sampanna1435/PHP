@@ -49,3 +49,22 @@ var_dump($a,$b,$c,$d);
 
 ?>
 </pre>
+
+<pre>
+p74 check test
+    <?php
+$true = TRUE;
+$false = FALSE;
+
+$a = $true && $true;
+$b = $true && $false;
+$c = $true || $false;
+$d = $true || $false;
+$e = !$true;
+$f = !$false ;
+$g = !($true && $false );
+$h = !($true && $false ) $false;
+
+var_dump($a,$b,$c,$d,$e,$f,$g,$h);
+    ?>
+</pre>
