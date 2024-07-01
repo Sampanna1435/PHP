@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en"> <!-- Updated language to English -->
+
+<head>
+    <meta charset="UTF-8">
+    <title>Mamfuli</title>
+    <style>
+        body {
+            text-align: center;
+        }
+
+        button {
+            font-size: 1.2em;
+            /* Increase button text size */
+            padding: 10px 20px;
+            /* Add padding to buttons */
+            margin: 5px;
+            /* Add margin around buttons */
+        }
+
+        #chat iframe {
+            width: 1500px;
+            /* Increase iframe width */
+            height: 1000px;
+            /* Increase iframe height */
+        }
+    </style>
+</head>
+
+<body>
+    <div id="chat"></div>
+
+    <br>
+
+
+
+    <br><br>
+
+    <script>
+        const chatElement = document.getElementById("chat");
+        createIframe();
+
+        function createIframe() {
+            const iframe = document.createElement("iframe");
+            iframe.src = "https://chatgpt.hunet.ai/chat-gpt/Test%20User";
+            iframe.width = "600"; // Increased width
+            iframe.height = "600"; // Increased height
+            iframe.frameBorder = "2";
+            iframe.scrolling = "10";
+
+            // onload focus input box
+            iframe.onload = function () {
+                this.contentWindow.postMessage({ message: "FOCUS_INPUTBOX" }, "*")
+            }
+
+            chatElement.appendChild(iframe);
+        }
+
+        function sendMessageToIframe(message) {
+            const chatIframeElement = chatElement.querySelector("iframe");
+            chatIframeElement.contentWindow.postMessage({ message }, "*");
+        }
+    </script>
+</body>
+
+</html>

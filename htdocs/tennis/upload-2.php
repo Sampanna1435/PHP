@@ -1,19 +1,22 @@
 <?php
-  $msg = null;  // アップロード状況を表すメッセージ
-  $alert = null;  // メッセージのデザイン用
+// p200 10-7
+$msg = null; // アップロード状況を表すメッセージ
+$alert = null; // メッセージのでざいん用
 
-  // アップロード処理
-  if (isset($_FILES['image']) && is_uploaded_file($_FILES['image']['tmp_name'])){
+// アップロード処理
+//   ⇩画像がアップロードされたかを確認する if
+if (isset($_FILES['image']) && is_uploaded_file($_FILES['image']['tmp_name'])) {
     $old_name = $_FILES['image']['tmp_name'];
     $new_name = $_FILES['image']['name'];
-    if (move_uploaded_file($old_name, 'album/'.$new_name)){
-      $msg = 'アップロードしました。';
-      $alert = 'success'; // Bootstrapで緑色のボックスにする
+    //  テンポラリフォルダから、ファイルを移動させる
+    if(move_uploaded_file($old_name, 'album/'.$new_name)) {
+        $msg = 'アップロードしました';
+        $alert = 'success';
     } else {
-      $msg = 'アップロードできませんでした。';
-      $alert = 'danger';  // Bootstrapで赤いボックスにする
+        $msg = 'アップロードできませんでした';
+        $alert = 'danger';
     }
-  }
+}
 ?>
 <!doctype html>
 <html lang="ja" >
@@ -31,18 +34,20 @@
 
         <h1>画像アップロード</h1>
         <?php
-          if ($msg){
+        if ($msg) {
             echo '<div class="alert alert-'.$alert.'" role="alert">'.$msg.'</div>';
-          }
+        }
         ?>
-        <form action="upload-3.php" method="post" enctype="multipart/form-data">
-          <div class="form-group">
-            <label>アップロードファイル</label>
-            <input type="file" name="image" class="form-control-file">
-          </div>
-          <input type="submit" value="アップロードする" class="btn btn-primary">
-        </form>
-
+ <!-- p198 10-5 -->
+ <!--  画像アップロードするには、enctype="multipart/form-data" をつける  -->
+ <form action="upload-2.php" method="post" enctype="multipart/form-data">
+    <div class="form-group"><!-- クラス名は bootstrapのもの -->
+        <label>アップロードファイル</label>
+        <!-- ファイルは type="file" -->
+        <input type="file" name="image" class="form-control-file">
+    </div>
+    <input type="submit" value="アップロードする" class="btn btn-primary">
+ </form>
         <!-- 本文ここまで -->
       </div>
     </main>
@@ -52,3 +57,4 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>
+
