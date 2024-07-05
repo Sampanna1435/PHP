@@ -1,4 +1,5 @@
 <?php
+  include 'includes/login.php';
   // 1ページに表示される書き込みの数
   $num = 10;
 
@@ -51,7 +52,7 @@
           </div>
           <div class="form-group">
             <label>名前</label>
-            <input type="text" name="name" class="form-control" value="<?php echo $_COOKIE['name'] ?>">
+            <input type="text" name="name" class="form-control" value="hhh">
           </div>
           <div class="form-group">
             <textarea name="body" class="form-control" rows="5"></textarea>
@@ -61,7 +62,6 @@
             <input type="text" name="pass" class="form-control">
           </div>
           <input type="submit" class="btn btn-primary" value="書き込む">
-          <input type="hidden" name="token" value="<?php echo hash("sha256", session_id()) ?>">
         </form>
         <hr>
 
@@ -69,7 +69,7 @@
         <div class="card">
           <div class="card-header"><?php echo $row['title']? $row['title']: '（無題）'; ?></div>
           <div class="card-body">
-            <p class="card-text"><?php echo nl2br(htmlspecialchars($row['body'], ENT_QUOTES, 'UTF-8')) ?></p>
+            <p class="card-text"><?php echo nl2br($row['body']) ?></p>
           </div>
           <div class="card-footer">
             <form action="delete.php" method="post" class="form-inline">
@@ -78,7 +78,6 @@
               <input type="hidden" name="id" value="<?php echo $row['id'] ?>">
               <input type="text" name="pass" placeholder="削除パスワード" class="form-control">
               <input type="submit" value="削除" class="btn btn-secondary">
-              <input type="hidden" name="token" value="<?php echo hash("sha256", session_id()) ?>">
             </form>
           </div>
         </div>

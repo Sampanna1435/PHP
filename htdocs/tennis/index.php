@@ -1,6 +1,5 @@
 <?php
-
-
+include('includes/login.php');
 // $title には１行目が入る
 
 
@@ -82,4 +81,3 @@ if ($fp) {
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>
-
