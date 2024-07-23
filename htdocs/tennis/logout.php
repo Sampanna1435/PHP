@@ -1,13 +1,18 @@
 <?php
+// p280 リスト12-7
 session_start();
-if(isset($_SESSION['id'])){
-    unset($_SESSION['id']);
-    }
-    header('Location:login.php');
+if (isset($_SESSION['id'])) {
+    unset($_SESSION['id']); // セッションをクリアする
+}
+header('Location: login.php');
 
-    //p282 check test
+// できた人は
+// p282 check test
 
-    //q1 setcookie('name','山田',time()*60*30);
-    //q2  $_SESSION
-    //q3  session_destroy
+// Q1 ⇨ p260
+// setcookie('name', '山田大介', time() + 60*30);
+// Q2 ⇨ p275
+// $_SESSION
+// Q3 ⇨ p281
+// session_destroy()
 ?>

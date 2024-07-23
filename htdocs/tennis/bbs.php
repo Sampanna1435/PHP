@@ -1,34 +1,42 @@
 <?php
-  include 'includes/login.php';
-  // 1ページに表示される書き込みの数
-  $num = 10;
+// includes フォルダの login.phpを読み込む
+include 'includes/login.php';
 
-  // DBに接続
-  $dsn = 'mysql:host=localhost;dbname=tennis;charset=utf8';
-  $user = 'tennisuser';
-  $password = 'password';
+// 1ページの件数
+$num = 2;
+// DBに接続。接続先、ユーザー名、パスワード
+$dsn = 'mysql:host=localhost;dbname=tennis;charset=utf8';
+$user = 'tennisuser';
+$password = 'password';
 
-  // GETメソッドで2ページ目以降が指定されているとき
-  $page = 1;
-  if (isset($_GET['page']) && $_GET['page'] > 1){
-    $page = intval($_GET['page']);
-  }
-
-  try {
-    // PDOインスタンスの生成
+$page = 1;
+if(isset($_GET['page']) && $_GET['page'] > 1) {
+  $page = intval($_GET['page']);
+}
+try {
     $db = new PDO($dsn, $user, $password);
     $db->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
-    // プリペアドステートメントを作成
     $stmt = $db->prepare("SELECT * FROM bbs ORDER BY date DESC LIMIT :page, :num");
-    // パラメータを割り当て
-    $page = ($page-1) * $num;
-    $stmt->bindParam(':page', $page, PDO::PARAM_INT);
-    $stmt->bindParam(':num', $num, PDO::PARAM_INT);
-    // クエリの実行
-    $stmt->execute();
-  } catch (PDOException $e){
-    exit("エラー：" . $e->getMessage());
-  }
+    // SELECT カラム FROM テーブル // 大きさ: テーブル＞カラム
+    // SELECT id FROM bbs
+    // ORDER BY はどのカラムの値で並べるか？
+    // ASC 小さい⇨大きい　　DESC 大きい⇨小さい、の順で並べる
+    // LIMIT 何件データをとってくるか
+    // LIMIT 0, 10   //　0件目から10
+    // LIMIT 開始, 件数
+
+    // パラメータ割り当て。
+    $page = ($page -1) * $num;
+    $stmt->bindParam(':page', $page, PDO::PARAM_INT); // LIMITの開始を指定
+    $stmt->bindParam(':num', $num, PDO::PARAM_INT); // LIMITの件数を指定
+
+    //$name = "田中";
+    //echo "こんにちは" . $name . "さん。";
+
+    $stmt->execute(); // 実際に実行する　
+} catch (PDOException $e){
+  exit("エラー: " . $e->getMessage());
+}
 ?>
 <!doctype html>
 <html lang="ja" >
@@ -43,74 +51,98 @@
     <main role="main" class="container" style="padding:60px 15px 0">
       <div>
         <!-- ここから「本文」-->
+        <p>ログイン中のユーザ: <?php echo $_SESSION['name'];?></p>
 
-        <h1>掲示板</h1>
-        <form action="write.php" method="post">
-          <div class="form-group">
-            <label>タイトル</label>
-            <input type="text" name="title" class="form-control">
-          </div>
-          <div class="form-group">
-            <label>名前</label>
-            <input type="text" name="name" class="form-control" value="hhh">
-          </div>
-          <div class="form-group">
-            <textarea name="body" class="form-control" rows="5"></textarea>
-          </div>
-          <div class="form-group">
-            <label>削除パスワード（数字４桁）</label>
-            <input type="text" name="pass" class="form-control">
-          </div>
-          <input type="submit" class="btn btn-primary" value="書き込む">
-        </form>
-        <hr>
+         <h1>掲示板</h1>
+         <form action="write.php" method="post">
+            <div class="form-group">
+                <label>タイトル</label>
+                <input type="text" name="title" class="form-control">
+            </div>
+<!--
+            <div class="form-group">
+                <label>名前</label>
+                <input type="text" name="name" class="form-control" value="<?php echo $name ;?>">
+            </div>
+-->
+            <div class="form-group">
+            <label>本文</label>
+                <textarea name="body" class="form-control" row="5"></textarea>
+            </div>
 
-<?php while ($row = $stmt->fetch()): ?>
-        <div class="card">
-          <div class="card-header"><?php echo $row['title']? $row['title']: '（無題）'; ?></div>
-          <div class="card-body">
-            <p class="card-text"><?php echo nl2br($row['body']) ?></p>
-          </div>
-          <div class="card-footer">
-            <form action="delete.php" method="post" class="form-inline">
-            <?php echo $row['name'] ?>
-            (<?php echo $row['date'] ?>)
-              <input type="hidden" name="id" value="<?php echo $row['id'] ?>">
-              <input type="text" name="pass" placeholder="削除パスワード" class="form-control">
-              <input type="submit" value="削除" class="btn btn-secondary">
-            </form>
-          </div>
-        </div>
-        <hr>
+    <input type="hidden" name="token" value="<?php echo hash("sha256", session_id()) ?>">
+            <div class="form-group">
+                <label>削除パスワード 数字4桁</label>
+                <input type="text" name="pass" class="form-control">
+            </div>
+            <input type="submit" class="btn btn-primary" value="書き込む">
+</form>
+<hr>
+<?php
+// fetch データを１行ずつ取ってくる
+while ($row = $stmt->fetch()) :?>
+<?php // var_dump($row);?>
+  <div class="card">
+    <div class="card-header"><?php echo $row['title']? $row['title']: '(無題)' ;?></div>
+    <?php
+    // echo $row['title']? $row['title']: '(無題)';
+    //  if文を短く書いたもので、三項演算子と呼ばれる p250
+    // if ($row['title']) {
+    //   echo $row['title']; 
+    // } else {
+    //   echo '(無題)';
+    // }
+    // echo 条件 ? 条件が真の時 : 条件が偽のとき
+
+    // if ( 条件 ) {
+    //     条件が真の時
+    // } else {
+    //     条件が偽の時
+    // }
+    ?>
+    <div class="card-body">
+      <?php // 教科書 p157 で出てきた nl2brを使うことで、html上で改行表示 ?>
+      <!-- p291 -->
+      <p class="card-text"><?php echo nl2br(htmlspecialchars($row['body'], ENT_QUOTES, 'UTF-8'));?></p>
+    </div>
+    <div class="card-footer">
+        <form action="delete.php" method="post" class="form-inline">
+    <?php echo $row['name'];?>
+    (<?php echo $row['date'];?>)
+    <input type="hidden" name="id" value="<?php echo $row["id"];?>">
+    <input type="hidden" name="token" value="<?php echo hash("sha256", session_id()) ?>">
+    <input type="text" name="pass" placeholder="削除パスワード" class="form-control">
+    <input type="submit" value="削除" class="btn btn-secondary">
+</form>
+    </div>
+  </div>
+  <hr>
 <?php endwhile; ?>
 
 <?php
-  // ページ数の表示
-  try {
-    // プリペアドステートメントの作成
-    $stmt = $db->prepare("SELECT COUNT(*) FROM bbs");
-    // クエリの実行
-    $stmt->execute();
-  } catch (PDOException $e){
-    exit("エラー：" . $e->getMessage());
+try{
+  $stmt = $db->prepare("SELECT COUNT(*) FROM bbs");
+  //                            ↑行数を数える
+  $stmt->execute();
+} catch (PDOException $e){
+  exit("エラー: " . $e->getMessage());
+}
+$comments = $stmt->fetchColumn(); // 行数（書き込みの数）を取ってきて$comments に入れる
+// $num : １ページの件数
+// 全部で３５件、１ページ１０件だったら、4ページ
+// ceil : 端数を切り上げる
+// round : 端数を四捨五入する
+// floor : 端数を切り捨てる
+$max_page = ceil($comments/ $num);
+if ($max_page >= 1) {
+  echo '<nav><ul class="pagination">';
+  for ($i = 1; $i <= $max_page; $i++) {
+    echo '<li class="page-item"><a class="page-link" href="bbs.php?page='.$i.'">'.$i.'</a></li>';
   }
-
-  // 書き込みの件数を取得
-  $comments = $stmt->fetchColumn();
-  // ページ数を計算
-  $max_page = ceil($comments / $num);
-  // ページングの必要性があれば表示
-  if ($max_page >= 1){
-    echo '<nav><ul class="pagination">';
-    for ($i = 1; $i <= $max_page; $i++){
-      echo '<li class="page-item"><a class="page-link" href="bbs.php?page='.$i.'">'.$i.'</a></li>';
-    }
-    echo '</ul></nav>';
-  }
+  echo '</ul></nav>';
+}
 ?>
-
-        <!-- 本文ここまで -->
-      </div>
+</div>
     </main>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" crossorigin="anonymous"></script>

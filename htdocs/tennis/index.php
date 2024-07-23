@@ -1,6 +1,8 @@
 <?php
-include('includes/login.php');
-// $title には１行目が入る
+// p278 リスト 12-5
+
+// includes フォルダの login.phpを読み込む
+include 'includes/login.php';
 
 
 // $info = file_get_contents("info.txt");
@@ -19,6 +21,7 @@ include('includes/login.php');
     <main role="main" class="container" style="padding:60px 15px 0">
       <div>
         <!-- ここから「本文」-->
+        <p>ログイン中のユーザ: <?php echo $_SESSION['name'];?></p>
 
         <h1>サークルサイト</h1>
         <?php
@@ -81,3 +84,4 @@ if ($fp) {
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>
+

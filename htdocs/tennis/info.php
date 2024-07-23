@@ -1,13 +1,8 @@
 <?php
-include('includes/login.php');
-// $title には１行目が入る
+// includes フォルダの login.phpを読み込む
+include 'includes/login.php';
 
-
-// $info = file_get_contents("info.txt");
-        // ⇧ファイルからテキストデータを取ってくる
 ?>
-
-
 <!doctype html>
 <html lang="ja" >
   <head>
@@ -21,8 +16,8 @@ include('includes/login.php');
     <main role="main" class="container" style="padding:60px 15px 0">
       <div>
         <!-- ここから「本文」-->
-
-        <h1>サークルサイト</h1>
+<p>ログイン中のユーザ: <?php echo $_SESSION['name'];?></p>
+        <h1>お知らせ</h1>
         <?php
         // p168 9-5
 $fp = fopen("info.txt","r");
@@ -49,7 +44,7 @@ if ($fp) {
         // p169 9-6 表示する
         // $lineにデータが入っているので、表示したい
         // for(最初の一回; 終了する条件; 各ループ終了時の処理)
-        //             countは、配列の要素の数を数える
+        //             countは、配列の要素の数を数える    
         if (count($line) > 0) {
             for($i = 0; $i < count($line); $i++ ) {
                 if ($i == 0) {
