@@ -88,7 +88,7 @@ while ($row = $stmt->fetch()) :?>
     // echo $row['title']? $row['title']: '(無題)';
     //  if文を短く書いたもので、三項演算子と呼ばれる p250
     // if ($row['title']) {
-    //   echo $row['title']; 
+    //   echo $row['title'];
     // } else {
     //   echo '(無題)';
     // }
